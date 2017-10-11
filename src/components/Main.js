@@ -8,9 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-
-import getWeather from '../api/getWeather';
-import { startFetch, fetchSuccess, fetchError } from '../actions/index';
+import { fetchWeatherThunk } from '../actions/index';
 
 class Main extends Component {
   constructor(props) {
@@ -21,10 +19,9 @@ class Main extends Component {
   }
 
   getWeatherMessage() {
-    const { city, temp, isLoading, error } = this.props;
-
-    if (isLoading) return 'Loading...';
-    if (error) return 'Error, try again!';
+    const { error, isLoading, city, temp } = this.props;
+    if (isLoading) return 'Loadding...';
+    if (error) return 'Error, try again.';
     if (city && temp) return `${city} is ${temp} oC`;
 
     return '';
@@ -32,10 +29,8 @@ class Main extends Component {
 
   getWeatherByCity() {
     const { city } = this.state;
-    this.props.startFetch();
-    getWeather(city)
-    .then(temp => this.props.fetchSuccess(city, temp))
-    .catch(error => this.props.fetchError());
+
+    this.props.fetchWeatherThunk(city);
   }
 
   render() {
@@ -44,10 +39,10 @@ class Main extends Component {
         <Text style={styles.welcome}>
           Enter your city
         </Text>
-        <TextInput 
+        <TextInput
           style={styles.inputCity}
-          onChangeText={text => this.setState({ city: text })}
-          value={this.state.text}
+          onChangeText={text => this.setState({city: text})}
+          value={this.state.city}
         />
         <TouchableOpacity onPress={this.getWeatherByCity.bind(this)}>
           <Text style={styles.button}>Get weather</Text>
@@ -94,7 +89,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     city: state.city,
     temp: state.temp,
@@ -102,5 +97,4 @@ const mapStateToProps = state => {
     error: state.error
   }
 }
-
-export default connect(mapStateToProps, { startFetch, fetchSuccess, fetchError })(Main);
+export default connect(mapStateToProps, { fetchWeatherThunk })(Main);
