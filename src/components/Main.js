@@ -7,18 +7,38 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import getWeather from '../api/getWeather';
+import { startFetch, fetchSuccess, fetchError } from '../actions/index';
 
-export default class Main extends Component {
+class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: 'Tokyo' };
+    this.state = { 
+      city: '' 
+    };
+  }
+
+  getWeatherMessage() {
+    const { city, temp, isLoading, error } = this.props;
+
+    if (isLoading) return 'Loading...';
+    if (error) return 'Error, try again!';
+    if (city && temp) return `${city} is ${temp} oC`;
+
+    return '';
+  }
+
+  getWeatherByCity() {
+    const { city } = this.state;
+    this.props.startFetch();
+    getWeather(city)
+    .then(temp => this.props.fetchSuccess(city, temp))
+    .catch(error => this.props.fetchError());
   }
 
   render() {
-    console.log(getWeather());
-
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
@@ -26,14 +46,14 @@ export default class Main extends Component {
         </Text>
         <TextInput 
           style={styles.inputCity}
-          onChangeText={(text) => this.setState(text)}
+          onChangeText={text => this.setState({ city: text })}
           value={this.state.text}
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={this.getWeatherByCity.bind(this)}>
           <Text style={styles.button}>Get weather</Text>
         </TouchableOpacity>
         <Text>
-          {this.state.text}
+          {this.getWeatherMessage()}
         </Text>
       </View>
     );
@@ -73,3 +93,14 @@ const styles = StyleSheet.create({
     margin: 20
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    city: state.city,
+    temp: state.temp,
+    isLoading: state.isLoading,
+    error: state.error
+  }
+}
+
+export default connect(mapStateToProps, { startFetch, fetchSuccess, fetchError })(Main);
