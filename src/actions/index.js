@@ -1,3 +1,4 @@
+import getWeather from '../api/getWeather';
 
 export const startFetch = () => {
   return {
@@ -17,4 +18,14 @@ export const fetchError = () => {
   return {
     type: 'FETCH_ERROR'
   }
+}
+
+export const fetchDataThunk = (city) => {
+  dispatch(startFetch());
+
+  return dispatch => {
+      getWeather(city)
+      .then(temp => dispatch(fetchSuccess(city, temp)))
+      .catch(() => dispatch(fetchError()));
+  };
 }
