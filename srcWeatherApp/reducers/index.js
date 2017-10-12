@@ -1,39 +1,9 @@
-const DEFAULT_STATE = {
-  city: null,
-  temp: null,
-  isLoading: false,
-  error: false
-}
+import { combineReducers } from 'redux';
 
-const reducer = (state = DEFAULT_STATE, action) => {
-  switch (action.type) {
-    case 'START_FETCH':
-      return {
-        city: null,
-        temp: null,
-        isLoading: true,
-        error: false
-      }
+import findCity from './findCity';
+import yourCity from './yourCity';
 
-    case 'FETCH_SUCCESS':
-     return {
-      city: action.city,
-      temp: action.temp,
-      isLoading: false,
-      error: false
-     }
-
-    case 'FETCH_ERROR':
-     return {
-      city: null,
-      temp: null,
-      isLoading: false,
-      error: true
-     }
-  
-    default:
-      return state;
-  }
-}
-
-export default reducer;
+export default combineReducers({
+  findCity,
+  yourCity
+});

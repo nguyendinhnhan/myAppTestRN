@@ -1,31 +1,53 @@
-import getWeather from '../api/getWeather';
+import { findCityAPI, fetchAllWeatherAPI } from '../api/getWeather';
 
-export const startFetch = () => {
+export const findCityRequest = () => {
   return {
-    type: 'START_FETCH'
+    type: 'FIND_CITY_REQUEST'
   }
 }
 
-export const fetchSuccess = (city, temp) => {
+export const findCitySuccess = (city, temp) => {
   return {
-    type: 'FETCH_SUCCESS',
+    type: 'FIND_CITY_SUCCESS',
     city,
     temp
   }
 }
 
-export const fetchError = () => {
+export const findCityFail = () => {
   return {
-    type: 'FETCH_ERROR'
+    type: 'FIND_CITY_FAIL'
   }
 }
 
-export const fetchDataThunk = (city) => {
-  dispatch(startFetch());
-
+export const findCityThunk = (city) => {
   return dispatch => {
-      getWeather(city)
-      .then(temp => dispatch(fetchSuccess(city, temp)))
-      .catch(() => dispatch(fetchError()));
+    dispatch(findCityRequest());
+    findCityAPI(city)
+      .then(temp => dispatch(findCitySuccess(city, temp)))
+      .catch(() => dispatch(findCityFail()));
   };
+}
+
+//Fetch all city
+export const fetchAllWeatherRequest = () => ({
+  type: 'FETCH_ALL_WEATHER_REQUEST'
+});
+
+export const fetchAllWeatherSuccess = arrWeathers => ({
+  type: 'FETCH_ALL_WEATHER_SUCCESS',
+  arrWeathers
+});
+
+export const fetchAllWeatherFail = () => ({
+  type: 'FETCH_ALL_WEATHER_FAIL'
+});
+
+export const fetchAllWeatherThunk = arrCities => {
+  return dispatch => {
+    dispatch(fetchAllWeatherRequest());
+    fetchAllWeatherAPI(arrCities)
+      .then(arrWeathers => dispatch(fetchAllWeatherSuccess(arrWeathers)))
+      .catch(err => dispatch(fetchAllWeatherFail()));
+  }
 }

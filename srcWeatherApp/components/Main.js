@@ -8,7 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { fetchWeatherThunk } from '../actions/index';
+import { findCityThunk } from '../actions/index';
 
 class Main extends Component {
   constructor(props) {
@@ -19,6 +19,7 @@ class Main extends Component {
   }
 
   getWeatherMessage() {
+    console.log(this.props);
     const { error, isLoading, city, temp } = this.props;
     if (isLoading) return 'Loadding...';
     if (error) return 'Error, try again.';
@@ -30,7 +31,7 @@ class Main extends Component {
   getWeatherByCity() {
     const { city } = this.state;
 
-    this.props.fetchWeatherThunk(city);
+    this.props.findCityThunk(city);
   }
 
   render() {
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1abc9c',
+    backgroundColor: '#4DB6AC',
   },
   welcome: {
     fontSize: 20,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     margin: 10
   },
   button: {
-    backgroundColor: '#16a085',
+    backgroundColor: '#00897B',
     borderColor: '#FFF',
     borderWidth: 1,
     borderRadius: 5,
@@ -97,4 +98,4 @@ const mapStateToProps = (state) => {
     error: state.error
   }
 }
-export default connect(mapStateToProps, { fetchWeatherThunk })(Main);
+export default connect(mapStateToProps, { findCityThunk })(Main);

@@ -1,5 +1,6 @@
 import { AppRegistry } from 'react-native';
-import App from './srcNavigator/AppRedux';
+import AppRedux from './srcNavigator/AppRedux';
 import AppReactNative from './srcReactNative/App';
+import AppWeather from './srcWeatherApp/App';
 
-AppRegistry.registerComponent('myApp', () => AppReactNative);
+AppRegistry.registerComponent('myApp', () => AppWeather);
